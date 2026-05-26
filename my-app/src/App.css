@@ -1,0 +1,130 @@
+@import './reset.css';
+@import './color.css';
+@import url('https://fonts.googleapis.com/css2?family=Gasoek+One&family=Noto+Sans+KR:wght@100..900&display=swap');
+
+
+/* 1. 스마트폰 화면 전체를 채우는 베이스 */
+.box__workspace {
+  display: flex;
+  flex-direction: column; /* 위에서 아래로 흐르는 구조 */
+  width: 100vw;
+  /* 폰 상하단 내비게이션 바/인디케이터 때문에 생기는 스크롤 방지 */
+  height: 100svh; 
+  background-color: #121212;
+  overflow: hidden;
+  box-sizing: border-box;
+  .text__title{
+    padding: 10px 20px;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--White);
+  }
+}
+
+/* control */
+.box__control{
+  padding: 10px 20px;
+  background-color: #1e1e1e;
+  border-top: 1px solid #333;
+  .text__title-control{
+    padding-bottom: 10px;
+    font-size: 18px;
+    color: var(--White);
+  }
+  .box__control-inner{
+    overflow-x: auto;
+    font-size: 0;
+    white-space: nowrap;
+    .form__select{
+      display: inline-block;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--White);
+      font-size: 14px;
+      & ~ label{
+        margin-left: 4px;
+      }
+    }
+  }
+  .form__select-container{
+    display: inline-block;
+    width: max-content;
+  }
+  .button__reset{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    margin-left: 4px;
+    border-radius: 8px;
+    background: var(--White);
+  }
+  .box__export-buttons{
+    display: inline-block;
+    button[class^="button__export-"]{
+      display: inline-block;
+      height: 32px;
+      margin-left: 4px;
+      padding: 4px;
+      border-radius: 8px;
+      background: var(--White);
+      font-size: 14px;
+      & + button[class^="button__export-"]{
+        margin-left: 4px;
+      }
+    }
+  }
+}
+
+/* 2. 상단: 릴스 카드 프리뷰 구역 (남은 여백을 다 차지) */
+.preview-zone {
+  flex: 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0a0a0a;
+  padding: 16px; /* 폰 액정 테두리와의 최소 여백 */
+}
+
+/* 3. ★ 핵심: 폰 화면 안에서 무조건 9:16 비율 유지 ★ */
+.box__card {
+  position: relative;
+  color: var(--White);
+  /* width: 100%; */
+  width: auto;
+  /* 높이는 가로 폭에 맞춰 9:16 비율로 자동 계산 */
+  aspect-ratio: 9 / 16; 
+  
+  /* 만약 세로가 너무 긴 폰이라서 카드가 밑으로 삐져나갈 것 같으면, 
+     높이를 제한하고 거꾸로 가로가 줄어들게 방어막 구축 */
+  max-height: 100%; 
+
+  background-color: #222;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  padding: 24px;
+}
+.box__image{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  .image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+.box__info-grid{
+  position: relative;
+  gap: 16px;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+  .box__info{
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+}

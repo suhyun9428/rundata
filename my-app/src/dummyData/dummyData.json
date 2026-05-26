@@ -1,0 +1,14 @@
+{
+  "activityId": 1234567890,
+  "activityName": "Seoul Running",
+  "activityType": {
+    "typeKey": "running"
+  },
+  "startTimeLocal": "2026-05-26T07:30:00.0",
+  "distance": 10050.2,
+  "duration": 2965.0,
+  "averageHR": 158.0,
+  "averageRunningCadenceInStepsPerMinute": 178.0,
+  "maxRunningCadenceInStepsPerMinute": 190.0,
+  "averageVelocity": 3.389
+}
