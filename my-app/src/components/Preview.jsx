@@ -1,114 +1,110 @@
-import { HiCalendarDateRange } from "react-icons/hi2";
-import { RiPinDistanceFill } from "react-icons/ri";
-import { FaRunning } from "react-icons/fa";
-import { MdOutlineTimer } from "react-icons/md";
-import { GoHeartFill } from "react-icons/go";
-import { useState } from "react";
-import classNames from 'classnames';
-import { atom, useAtom, useAtomValue } from 'jotai';
-import { selectTextValue, selectImageValue } from '../atom/atom';
+import React, { forwardRef } from 'react';
+import { useAtom, useAtomValue } from 'jotai';
+import { useElementLayout } from '../hooks/useElementLayout.js';
+import { cardBackgroundAtom, delElements } from '../atom/atom.js';
 import { getInfoList } from '../constants/option.jsx';
-import { RiCloseCircleFill } from "react-icons/ri";
-import { FaExpandAlt } from "react-icons/fa";
+import ControlWrapper from './ControlWrapper.jsx';
 
-const Preview = ({ data, styles }) => {
-  
-  const textValue = useAtomValue(selectTextValue);
-  const imageValue = useAtomValue(selectImageValue);
+const Preview = forwardRef(({ data }, ref) => {
+  const { layouts, activeValue, setActiveValue, handleResizeElement, handleMoveElement } = useElementLayout();
+  const bgState = useAtomValue(cardBackgroundAtom);
+  const [deletedEls, setDeletedEls] = useAtom(delElements);
 
-  const distanceToKm = data.distance / 1000;
-  const showDistance = distanceToKm.toFixed(2);
-  const pace = (data.averageVelocity).toFixed(2);
-  const paceMins = pace.split('.')[0];
-  const paceSecs = pace.split('.')[1];
+  const showDistance = data?.distance ? (data.distance / 1000).toFixed(2) : '0.00';
+  const [paceMins, paceSecs] = data?.averageVelocity ? data.averageVelocity.toFixed(2).split('.') : ['0', '00'];
+  const [timeMins, timeSecs] = data?.duration ? (data.duration / 60).toFixed(2).toString().split('.') : ['0', '00'];
 
-  const durationTime = (data.duration / 60).toFixed(2).toString();
-  const timeMins = durationTime.split('.')[0];
-  const timeSecs = durationTime.split('.')[1];
+  const lats = data?.gpxRoute ? data.gpxRoute.map((p) => p.lat) : [];
+  const lngs = data?.gpxRoute ? data.gpxRoute.map((p) => p.lng) : [];
 
-  const route = data.gpxRoute || [];
-  // 1. 위경도 데이터를 SVG ViewBox(0~100) 안의 좌표로 변환하는 미니 함수
-  // 실제 지도처럼 정밀하진 않지만, 카드 배경에 이쁜 코스 선 모양을 따내기에 충분합니다!
-  const lats = route.map(p => p.lat);
-  const lngs = route.map(p => p.lng);
-  
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const minLng = Math.min(...lngs);
-  const maxLng = Math.max(...lngs);
+  const minLat = lats.length > 0 ? Math.min(...lats) : 0;
+  const maxLat = lats.length > 0 ? Math.max(...lats) : 0;
+  const minLng = lngs.length > 0 ? Math.min(...lngs) : 0;
+  const maxLng = lngs.length > 0 ? Math.max(...lngs) : 0;
 
-  // 좌표들을 10~90 사이의 SVG 픽셀 값으로 스케일링 (상하반전 처리 포함)
-  const svgPoints = route.map(p => {
-    const x = ((p.lng - minLng) / (maxLng - minLng || 1)) * 80 + 10;
-    const y = 90 - (((p.lat - minLat) / (maxLat - minLat || 1)) * 80); 
-    return `${x},${y}`;
-  }).join(' ');
+  const svgPoints = data?.gpxRoute
+    ? data.gpxRoute
+        .map((p) => {
+          const x = ((p.lng - minLng) / (maxLng - minLng || 1)) * 80 + 10;
+          const y = 90 - ((p.lat - minLat) / (maxLat - minLat || 1)) * 80;
+          return `${x},${y}`;
+        })
+        .join(' ')
+    : '';
 
-  const infoList = getInfoList({
-    startTimeLocal: data.startTimeLocal,
-    showDistance,
-    paceMins,
-    paceSecs,
-    timeMins,
-    timeSecs,
-    averageHR: data.averageHR,
-    averageCadence : data.averageRunningCadenceInStepsPerMinute,
-    maxCadence : data.maxRunningCadenceInStepsPerMinute,
+  // 지도 SVG 엘리먼트 정의
+  const gpxSvgElement = data?.gpxRoute?.length > 0 && (
+    <svg viewBox="0 0 100 100" className="map-svg">
+      <polyline points={svgPoints} fill="none" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="3" />
+      <polyline points={svgPoints} fill="none" stroke="#00ffcc" strokeWidth="2" className="running-path" />
+    </svg>
+  );
+
+  const rawInfoList = getInfoList({
+    startTimeLocal: data?.startTimeLocal || '',
+    showDistance, paceMins, paceSecs, timeMins, timeSecs,
+    averageHR: data?.averageHR || 0,
+    averageCadence: data?.averageRunningCadenceInStepsPerMinute || 0,
+    gpxElement: gpxSvgElement
   });
 
-  return(
-    // style={currentBg?.style}
-    <div className="box__card">
-      <button type="button" className="button__elements-control button__delete" >
-        {/* onClick={handleDelete} */}
-        <span className="for-a11y">카드 삭제</span>
-        <RiCloseCircleFill color="red" />
-      </button>
-      <div className="box__image">
-        <img className="image" src="//dummyimage.com/4000x2250/e9e9e9/fff" alt="" />
-      </div>
-      <div className={classNames("box__map-layer", imageValue === "gpx" && "is--active")}>
-        {route.length > 0 && (
-          <svg viewBox="0 0 100 100" className="map-svg">
-            <polyline
-              points={svgPoints}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.2)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <polyline
-              points={svgPoints}
-              fill="none"
-              stroke="#00ffcc"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="running-path"
-            />
-          </svg>
-        )}
-      </div>
-       <div className="box__info-grid">
-        {infoList.map((item, idx) => {
-          const isActive = item.id === textValue;
+  const visibleInfoList = rawInfoList ? rawInfoList.filter(item => !deletedEls.includes(item.id)) : [];
+
+  const handleDeleteElement = (id) => {
+    setActiveValue(null);
+    setDeletedEls([...deletedEls, id]);
+  };
+
+  const getDynamicBackgroundStyle = () => {
+    const baseStyle = { position: 'relative' };
+    if (bgState.type === 'image') return { ...baseStyle, backgroundImage: `url(${bgState.value})`, backgroundSize: 'cover', backgroundPosition: 'center' };
+    if (bgState.type === 'gradient') return { ...baseStyle, background: bgState.value };
+    return { ...baseStyle, backgroundColor: bgState.value };
+  };
+
+  return (
+    <div className="box__card" ref={ref} style={getDynamicBackgroundStyle()}>
+      <div className="box__info-grid" style={{ position: 'relative'}}>
+        {visibleInfoList?.map((item) => {
+          const currentLayout = layouts[item.id];
+          const isActive = item.id === activeValue;
+          
+          const dynamicLeft = currentLayout?.left ? `${(currentLayout.left / 768) * 100}%` : 'auto';
+          const dynamicTop = currentLayout?.top ? `${(currentLayout.top / 1365) * 100}%` : 'auto';
+          const dynamicWidth = currentLayout?.width ? `${(currentLayout.width / 768) * 100}%` : 'auto';
+          const dynamicHeight = currentLayout?.height ? `${(currentLayout.height / 1365) * 100}%` : 'auto';
+
           return (
-            <div key={item.id} className={classNames("box__info", item.className, isActive && 'is--active')}>
-              {item.icon}
-              <span className="for-a11y">{item.label}</span>
-              <span className="text__data">{item.value}</span>
-              {item.unit && <span className="text__unit">{item.unit}</span>}
-            </div>
+            <ControlWrapper
+              key={item.id}
+              id={item.id}
+              isActive={isActive}
+              className={item.className}
+              onDelete={handleDeleteElement}
+              onResize={handleResizeElement}
+              onMove={handleMoveElement}
+              style={{
+                position: 'absolute',
+                top: dynamicTop,
+                left: dynamicLeft,
+                width: dynamicWidth,
+                height: dynamicHeight,
+              }}
+            >
+              {item.customContent ? item.customContent : (
+                <>
+                  {item.icon}
+                  <span className="text__data">{item.value}{item.unit && <span className="text__unit">{item.unit}</span>}</span>
+                  
+                </>
+              )}
+            </ControlWrapper>
           );
         })}
       </div>
-      <button type="button" className="button__elements-control button__resize">
-        <span className="for-a11y">크기 조절</span>
-        <FaExpandAlt  />
-      </button>
     </div>
-  )
-}
+  );
+});
 
+Preview.displayName = 'Preview';
 export default Preview;

@@ -3,35 +3,52 @@ import classNames from 'classnames';
 import { RiCloseCircleFill } from 'react-icons/ri';
 import { FaExpandAlt } from 'react-icons/fa';
 
-const ControlWrapper = ({ id, isActive, className, children, onDelete, onResize }) => {
+const ControlWrapper = ({ id, isActive, className, children, onDelete, onResize, onMove, style }) => {
   return (
-    <div className={classNames("box__info", className, { 'is--active': isActive })}>
+    <div 
+      className={classNames("box__info", className, { 'is--active': isActive })}
+      style={style}
+      // 박스 자체를 누르면 이동 시작
+      onMouseDown={(e) => onMove(e, id)}
+      onTouchStart={(e) => onMove(e, id)}
+    >
       
-      {/* 1. active 상태일 때만 삭제 버튼 노출 */}
       {isActive && (
         <button 
           type="button" 
           className="button__elements-control button__delete"
+          // 🌟 웹/앱 양쪽에서 완벽하고 안전하게 삭제 신호를 보내는 세팅
           onClick={(e) => {
-            e.stopPropagation(); // 카드 자체 클릭 이벤트 전파 방지
+            e.stopPropagation();
             onDelete(id);
           }}
+          onTouchEnd={(e) => {
+            e.stopPropagation();
+            onDelete(id);
+          }}
+          // 이동 이벤트가 버블링되어 방해하는 것을 차단
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
         >
           <span className="for-a11y">요소 삭제</span>
           <RiCloseCircleFill color="red" />
         </button>
       )}
 
-      {/* 2. 실제 내용물 (지도 본문이나 데이터 텍스트들이 여기에 들어옴) */}
       {children}
 
-      {/* 3. active 상태일 때만 리사이즈 핸들 노출 */}
       {isActive && (
         <button 
           type="button" 
           className="button__elements-control button__resize"
-          // 여기에 드래그 리사이즈 관련 이벤트를 연결하게 됩니다.
-          onMouseDown={(e) => onResize(e, id)} 
+          onMouseDown={(e) => {
+            e.stopPropagation(); // 부모 이동 이벤트와 충돌 방지
+            onResize(e, id);
+          }}
+          onTouchStart={(e) => {
+            e.stopPropagation(); // 부모 이동 이벤트와 충돌 방지
+            onResize(e, id);
+          }}
         >
           <span className="for-a11y">크기 조절</span>
           <FaExpandAlt />

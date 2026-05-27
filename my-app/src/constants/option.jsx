@@ -1,4 +1,3 @@
-// option.jsx
 import { HiCalendarDateRange } from 'react-icons/hi2';
 import { RiPinDistanceFill } from 'react-icons/ri';
 import { FaRunning } from 'react-icons/fa';
@@ -7,7 +6,7 @@ import { GoHeartFill } from 'react-icons/go';
 import { IoFootsteps } from "react-icons/io5";
 
 export const getInfoList = ({ startTimeLocal, showDistance, paceMins, paceSecs, timeMins, timeSecs, averageHR, averageCadence, maxCadence, gpxElement }) => [
-{
+  {
     id: 'gpx',
     label: '코스 지도',
     className: 'box__map',

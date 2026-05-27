@@ -85,11 +85,14 @@
   max-height: 100%; 
   padding: 24px;
   border-radius: 16px;
-  background-color: #222;
+  /* background-color: #222; */
   aspect-ratio: 9 / 16; 
   color: var(--White);
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-
+  background-size: 100% 100svh;
+  background-repeat: no-repeat;
+  background-position: center center;
+  overflow: hidden;
 }
 .box__image{
   position: absolute;
@@ -144,8 +147,8 @@
       border: 2px dashed red;
     }
     &.box__map {
-      width: 100px;
-      height: 150px;
+      width: 180px;
+      height: 180px;
       display: flex;
       justify-content: center;
       z-index: 1;
@@ -158,6 +161,10 @@
           animation: runCourse 10s linear infinite; 
         }
       }
+    }
+    .image__icon,
+    .text__data{
+      flex-shrink: 0;
     }
   }
 }
@@ -172,4 +179,322 @@
   100% {
     stroke-dashoffset: 0;
   }
+}
+.box__workspace {
+  display: flex;
+  width: 100vw;
+  max-width: 768px;
+  height: 100svh; 
+  margin: 0 auto;
+  background-color: var(--deep-bg);
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.box__workspace .text__title {
+  padding: 16px 20px 8px;
+  font-family: 'Gasoek One', sans-serif; /* 타이틀 폰트 캐릭터 살리기 */
+  font-size: 22px;
+  color: #FFFFFF;
+  letter-spacing: -0.5px;
+}
+
+/* ⚙️ Control Panel (하단 하드웨어 장난감 감성) */
+.box__control {
+  padding: 20px;
+  background-color: var(--toy-purple);
+  border-top: 3px solid var(--chou-navy); /* 얇은 선 대신 굵게 마감 */
+  border-radius: 24px 24px 0 0; /* 에디터 상단 둥글게 깎기 */
+  box-shadow: 0 -8px 0px rgba(0,0,0,0.15);
+}
+
+.box__control .text__title-control {
+  padding-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #A5A3C1;
+}
+
+.box__control .box__control-inner {
+  overflow-x: auto;
+  font-size: 0;
+  white-space: nowrap;
+  padding-bottom: 5px;
+}
+
+/* 하단 셀렉트 박스를 장난감 버튼처럼 변경 */
+.box__control .box__control-inner .form__select {
+  display: inline-block;
+  height: 38px;
+  padding: 0 12px;
+  border: 2px solid var(--chou-navy);
+  border-radius: 12px;
+  background: var(--cream-bg);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--chou-navy);
+  box-shadow: 2px 2px 0px var(--chou-navy);
+  cursor: pointer;
+  outline: none;
+}
+
+.box__control .box__control-inner .form__select:focus {
+  border-color: var(--bubble-pink);
+}
+
+.box__control .box__control-inner .form__select ~ label {
+  margin-left: 8px;
+}
+
+.box__control .form__select-container {
+  display: inline-block;
+  width: max-content;
+}
+
+/* 공통 기능 버튼 스타일 (리셋, 익스포트) */
+.box__control .button__reset, 
+.box__control button[class^="button__export-"] {
+  display: inline-block;
+  height: 38px;
+  margin-left: 8px;
+  padding: 0 14px;
+  border: 2px solid var(--chou-navy);
+  border-radius: 12px;
+  background: var(--melon-green); /* 청량한 그린 컬러 패치 */
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--chou-navy);
+  box-shadow: 2px 2px 0px var(--chou-navy);
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.box__control .button__reset:active, 
+.box__control button[class^="button__export-"]:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--chou-navy);
+}
+
+.box__control .button__reset {
+  width: 38px;
+  padding: 0;
+  background: #FFD15C; /* 리셋은 젤리 노란색 */
+}
+
+.box__control .box__export-buttons {
+  display: inline-block;
+}
+
+.box__control .box__export-buttons button[class^="button__export-"]{
+  height: 38px;
+  border-radius: 12px;
+}
+
+.box__control .box__export-buttons button[class^="button__export-"] + button[class^="button__export-"] {
+  margin-left: 4px;
+}
+
+/* 🖼️ Preview Canvas Area */
+.preview-zone {
+  display: flex;
+  flex: 1; 
+  padding: 24px;
+  background-color: #0F0E1A;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 릴스 스마트폰 카드 틀 */
+.box__card {
+  position: relative;
+  width: auto;
+  max-height: 100%; 
+  border: 4px solid var(--chou-navy); /* 만화 일러스트 느낌의 외곽선 */
+  border-radius: 28px;          /* 포근하게 깎인 라운딩 */
+  aspect-ratio: 9 / 16; 
+  background-color: var(--cream-bg);
+  box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.3); /* 레트로 3D 그림자 */
+  overflow: hidden;
+}
+
+.box__image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  opacity: 0.85; /* 배경 이미지가 너무 강해서 데이터가 묻히지 않도록 틴팅 조절 */
+}
+
+.box__image .image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 📊 컴포넌트 아이템들이 배치되는 절대 좌표 그리드 */
+.box__info-grid {
+  position: relative;
+  gap: 16px;
+  font-size: 16px;
+  font-weight: 800; /* 서체를 도톰하게 처리 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+.box__info-grid .box__info {
+  display: flex;
+  width: max-content;
+  padding: 8px 14px;
+  background-color: #FFFFFF;
+  border: 3px solid var(--chou-navy); /* 스티커 패치 느낌 마감 */
+  border-radius: 16px;
+  gap: 6px;
+  align-items: center;
+  color: var(--chou-navy);
+  position: absolute; /* absolute 배치를 완벽 추종 */
+  box-shadow: 4px 4px 0px rgba(42, 40, 70, 0.15);
+  box-sizing: border-box;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, box-shadow 0.2s;
+  font-size: calc(var(--info-width, 100) * 0.13px);
+}
+
+/* 🛠️ 대망의 조작 핸들 (삭제 / 리사이즈 버튼 고도화) */
+.box__info-grid .box__info .button__elements-control {
+  position: absolute;
+  background: var(--chou-navy);
+  border: 2px solid var(--chou-navy);
+  color: #FFFFFF;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+  right: -12px;
+}
+
+.box__info-grid .box__info .button__elements-control.button__delete {
+  top: -12px;
+  background: var(--bubble-pink); /* 삭제 버튼은 러블리한 핑크 */
+  color: var(--chou-navy);
+  font-weight: 900;
+}
+
+.box__info-grid .box__info .button__elements-control.button__resize {
+  bottom: -12px;
+  background: var(--melon-green); /* 리사이즈는 멜론 그린 */
+  color: var(--chou-navy);
+  cursor: nwse-resize;
+}
+
+/* 🌟 에러 같은 빨간 점선 대신 젤리처럼 뿅 튀어나오는 액티브 피드백! */
+.box__info-grid .box__info.is--active {
+  z-index: 1;
+  border-color: var(--bubble-pink);
+  box-shadow: 4px 4px 0px var(--bubble-pink);
+  transform: scale(1.04); /* 미세하게 부풀려 조작감 피드백 제공 */
+}
+
+/* 🗺️ 코스 지도 레이어 전용 스타일 보정 */
+.box__info-grid .box__info.box__map {
+  background-color: rgba(255, 255, 255, 0.9); /* 지도는 반투명 화이트 패치 위에 */
+  border-radius: 20px;
+  padding: 12px;
+}
+
+.box__info-grid .box__info.box__map .map-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.box__info-grid .box__info.box__map .map-svg polyline:first-child {
+  stroke: var(--chou-navy);
+  stroke-opacity: 0.15;
+  stroke-dasharray: 4 4; /* 뒷 배경 철로 느낌 연출 */
+  stroke-width: 4;
+}
+
+.box__info-grid .box__info.box__map .map-svg .running-path {
+  stroke: var(--bubble-pink);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: runCourse 6s linear infinite;
+}
+.box__info-grid .box__info .text__data {
+  font-size: 1.1em; 
+  line-height: 1;
+}
+
+.box__info-grid .box__info .text__unit {
+  font-size: 0.8em;
+  margin-left: 0.2em;
+}
+
+.box__info-grid .box__info .image__icon {
+  font-size: 1.3em;
+  flex-shrink: 0;
+}
+
+/* App.css 최종 마무리 */
+.box__info-grid .box__info.is--active {
+  /* 얇은 2px 점선 대신, 해상도에 비례해서 미세하게 두꺼워지는 
+     장난감 같은 도톰한 vw 단위 점선 테두리를 줍니다! */
+  border: 0.3vw dashed var(--bubble-pink);
+  box-shadow: 0.8vw 0.8vw 0px var(--bubble-pink);
+  transform: scale(1.05); /* 쫀득한 액티브 젤리 효과 극대화 */
+}
+
+/* 🖼️ 1. 카드가 배치되는 전체 배경 영역 */
+.preview-zone {
+  display: flex;
+  width: 100vw;
+  max-width: 768px; /* PC에서 볼 때 너무 퍼지지 않게 방어선 */
+  height: 100svh;   /* 🌟 스마트폰 뷰포트 순정 세로 높이 100% 꽉 채우기 */
+  margin: 0 auto;
+  background-color: var(--deep-bg);
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Noto Sans KR', sans-serif;
+  box-sizing: border-box;
+}
+
+/* 📱 2. 대망의 인스타 릴스 스마트폰 도화지 틀 (해상도 자동 동기화 핵심) */
+.box__card {
+position: relative;
+  
+  /* 🌟 [디자이너 치트키] 
+     상단 타이틀과 하단 컨트롤러 패널이 차지하는 고정 높이(약 220px~240px)를 제외한,
+     나머지 '남은 모바일 화면 높이'를 유연하게 꽉 채우도록 수식을 먹입니다! */
+  height: calc(100% - 240px); 
+  margin: 12px auto; /* 스마트폰 화면 정가운데로 정렬 */
+  
+  /* 🌟 가로 폭은 절대 고정 숫자를 쓰지 않고, 계산된 세로 높이에 맞춰 
+     인스타 릴스 규격인 '9:16 비율'로 브라우저가 자동 계산하게 만듭니다. */
+  aspect-ratio: 9 / 16; 
+  
+  /* 뚱뚱한 폰 화면에서도 양옆이 삐져나가지 않도록 쳐두는 안전장치 */
+  max-width: calc(100% - 32px); 
+
+  border: 4px solid var(--chou-navy);
+  border-radius: 28px;
+  box-shadow: 12px 12px 0px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  background-color: var(--cream-bg);
+  box-sizing: border-box;
+}
+
+/* 📊 3. 자식 요소들이 노는 절대 좌표 그리드 울타리 */
+.box__info-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }
