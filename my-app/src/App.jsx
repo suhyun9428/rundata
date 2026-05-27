@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import Controls from './components/Controls';
 import dummyData from './dummyData/dummyData.json';
-import Preview from './components/Preview';
+import Preview from './components/Preview_v2';
 import { TEXT_OPTIONS, IMAGE_OPTIONS } from './constants/option';
-
+import { useAtom } from 'jotai';
 import './App.css';
 
 function App() {
-  const [currentTarget, setCurrentTarget] = useState('distance');
   const [styles, setStyles] = useState({
     distance: { size: 32, x: 0, y: 0 },
     pace: { size: 18, x: 0, y: 0 },
@@ -26,7 +25,7 @@ function App() {
       <Controls textOptions={TEXT_OPTIONS} imageOptions={IMAGE_OPTIONS} />
 
       {/* 2. 실제 인스타 릴스 모양의 상자 (9:16 비율) */}
-      <Preview data={dummyData} currentTarget={currentTarget} styles={styles} setStyles={setStyles} />
+      <Preview data={dummyData} styles={styles} setStyles={setStyles} />
     </div>
   );
 }

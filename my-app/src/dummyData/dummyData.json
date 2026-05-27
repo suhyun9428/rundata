@@ -10,5 +10,12 @@
   "averageHR": 158.0,
   "averageRunningCadenceInStepsPerMinute": 178.0,
   "maxRunningCadenceInStepsPerMinute": 190.0,
-  "averageVelocity": 3.389
+  "averageVelocity": 3.389,
+  "gpxRoute": [
+    { "lat": 37.5665, "lng": 126.9780 },
+    { "lat": 37.5612, "lng": 126.9831 },
+    { "lat": 37.5545, "lng": 126.9704 },
+    { "lat": 37.5401, "lng": 126.9650 },
+    { "lat": 37.5350, "lng": 126.9610 }
+  ]
 }

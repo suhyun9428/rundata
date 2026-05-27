@@ -6,15 +6,15 @@ import { GoHeartFill } from "react-icons/go";
 import { useState } from "react";
 import classNames from 'classnames';
 import { atom, useAtom, useAtomValue } from 'jotai';
-import { selectTextValue, selectImageValue } from '../atom/atom';
+import { activeValue } from '../atom/atom.js';
 import { getInfoList } from '../constants/option.jsx';
 import { RiCloseCircleFill } from "react-icons/ri";
 import { FaExpandAlt } from "react-icons/fa";
+import ControlWrapper from "./ControlWrapper.jsx";
 
 const Preview = ({ data, styles }) => {
   
-  const textValue = useAtomValue(selectTextValue);
-  const imageValue = useAtomValue(selectImageValue);
+  const [ activeEl, setActiveEl ] = useAtom(activeValue);
 
   const distanceToKm = data.distance / 1000;
   const showDistance = distanceToKm.toFixed(2);
@@ -56,18 +56,27 @@ const Preview = ({ data, styles }) => {
     maxCadence : data.maxRunningCadenceInStepsPerMinute,
   });
 
+  const handleDeleteElement = (id) => {
+    setActiveEl(null);
+  };
+
+  const handleResizeElement = (e, id) => {
+    console.log(`${id} 요소 리사이즈 시작`);
+  };
+
   return(
-    // style={currentBg?.style}
     <div className="box__card">
-      <button type="button" className="button__elements-control button__delete" >
-        {/* onClick={handleDelete} */}
-        <span className="for-a11y">카드 삭제</span>
-        <RiCloseCircleFill color="red" />
-      </button>
       <div className="box__image">
         <img className="image" src="//dummyimage.com/4000x2250/e9e9e9/fff" alt="" />
       </div>
-      <div className={classNames("box__map-layer", imageValue === "gpx" && "is--active")}>
+
+      <ControlWrapper
+        id="gpx"
+        isActive={activeEl === "gpx"}
+        className="box__map"
+        onDelete={handleDeleteElement}
+        onResize={handleResizeElement}
+      >
         {route.length > 0 && (
           <svg viewBox="0 0 100 100" className="map-svg">
             <polyline
@@ -89,24 +98,29 @@ const Preview = ({ data, styles }) => {
             />
           </svg>
         )}
-      </div>
-       <div className="box__info-grid">
-        {infoList.map((item, idx) => {
-          const isActive = item.id === textValue;
+      </ControlWrapper>
+
+      <div className="box__info-grid">
+        {infoList.map((item) => {
+          const isActive = item.id === activeEl;
+
           return (
-            <div key={item.id} className={classNames("box__info", item.className, isActive && 'is--active')}>
+            <ControlWrapper
+              key={item.id}
+              id={item.id}
+              isActive={isActive}
+              className={item.className}
+              onDelete={handleDeleteElement}
+              onResize={handleResizeElement}
+            >
               {item.icon}
               <span className="for-a11y">{item.label}</span>
               <span className="text__data">{item.value}</span>
               {item.unit && <span className="text__unit">{item.unit}</span>}
-            </div>
+            </ControlWrapper>
           );
         })}
       </div>
-      <button type="button" className="button__elements-control button__resize">
-        <span className="for-a11y">크기 조절</span>
-        <FaExpandAlt  />
-      </button>
     </div>
   )
 }
