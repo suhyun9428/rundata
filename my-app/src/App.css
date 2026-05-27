@@ -118,53 +118,50 @@
     gap: 4px;
     align-items: center;
     color: #0a0a0a;
-  }
-}
-.box__map {
-  position: relative;
-  width: 100px;
-  height: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  .map-svg {
-    width: 80%;
-    height: 80%;
-    .running-path {
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
-      animation: runCourse 10s linear infinite; 
+    position: relative;
+    .button__elements-control {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.6);
+      border: none;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      right:-5px;
+      &.button__delete {
+        top: -5px;
+      }
+      &.button__resize {
+        bottom: -5px;
+        cursor: nwse-resize;
+      }
+    }
+    &.is--active{
+      border: 2px dashed red;
+    }
+    &.box__map {
+      width: 100px;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      z-index: 1;
+      .map-svg {
+        width: 80%;
+        height: 80%;
+        .running-path {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: runCourse 10s linear infinite; 
+        }
+      }
     }
   }
 }
-.box__info{
-  position: relative;
-  .button__elements-control {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.6);
-    border: none;
-    color: #fff;
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    right:-5px;
-    &.button__delete {
-      top: -5px;
-    }
-    &.button__resize {
-      bottom: -5px;
-      cursor: nwse-resize;
-    }
-  }
-  &.is--active{
-    border: 2px dashed red;
-  }
-}
+
 @keyframes runCourse {
   0% {
     stroke-dashoffset: 1000;

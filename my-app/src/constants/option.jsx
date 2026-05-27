@@ -6,7 +6,13 @@ import { MdOutlineTimer } from 'react-icons/md';
 import { GoHeartFill } from 'react-icons/go';
 import { IoFootsteps } from "react-icons/io5";
 
-export const getInfoList = ({ startTimeLocal, showDistance, paceMins, paceSecs, timeMins, timeSecs, averageHR, averageCadence, maxCadence }) => [
+export const getInfoList = ({ startTimeLocal, showDistance, paceMins, paceSecs, timeMins, timeSecs, averageHR, averageCadence, maxCadence, gpxElement }) => [
+{
+    id: 'gpx',
+    label: '코스 지도',
+    className: 'box__map',
+    customContent: gpxElement, 
+  },
   {
     id: 'distance',
     label: '거리',

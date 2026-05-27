@@ -1,20 +1,13 @@
-import { HiCalendarDateRange } from "react-icons/hi2";
-import { RiPinDistanceFill } from "react-icons/ri";
-import { FaRunning } from "react-icons/fa";
-import { MdOutlineTimer } from "react-icons/md";
-import { GoHeartFill } from "react-icons/go";
 import { useState } from "react";
-import classNames from 'classnames';
 import { atom, useAtom, useAtomValue } from 'jotai';
-import { activeValue } from '../atom/atom.js';
+import { activeValue, delElements } from '../atom/atom.js';
 import { getInfoList } from '../constants/option.jsx';
-import { RiCloseCircleFill } from "react-icons/ri";
-import { FaExpandAlt } from "react-icons/fa";
+import classNames from 'classnames';
 import ControlWrapper from "./ControlWrapper.jsx";
 
 const Preview = ({ data, styles }) => {
-  
   const [ activeEl, setActiveEl ] = useAtom(activeValue);
+  const [ delEls, setDelEls ] = useAtom(delElements);
 
   const distanceToKm = data.distance / 1000;
   const showDistance = distanceToKm.toFixed(2);
@@ -44,6 +37,13 @@ const Preview = ({ data, styles }) => {
     return `${x},${y}`;
   }).join(' ');
 
+  const gpxSvgElement = route.length > 0 && (
+    <svg viewBox="0 0 100 100" className="map-svg">
+      <polyline points={svgPoints} fill="none" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={svgPoints} fill="none" stroke="#00ffcc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="running-path" />
+    </svg>
+  );
+
   const infoList = getInfoList({
     startTimeLocal: data.startTimeLocal,
     showDistance,
@@ -54,10 +54,14 @@ const Preview = ({ data, styles }) => {
     averageHR: data.averageHR,
     averageCadence : data.averageRunningCadenceInStepsPerMinute,
     maxCadence : data.maxRunningCadenceInStepsPerMinute,
+    gpxElement: gpxSvgElement
   });
+
+  const visibleInfoList = infoList.filter(item => !delEls.includes(item.id));
 
   const handleDeleteElement = (id) => {
     setActiveEl(null);
+    setDelEls([...delEls, id]);
   };
 
   const handleResizeElement = (e, id) => {
@@ -69,39 +73,8 @@ const Preview = ({ data, styles }) => {
       <div className="box__image">
         <img className="image" src="//dummyimage.com/4000x2250/e9e9e9/fff" alt="" />
       </div>
-
-      <ControlWrapper
-        id="gpx"
-        isActive={activeEl === "gpx"}
-        className="box__map"
-        onDelete={handleDeleteElement}
-        onResize={handleResizeElement}
-      >
-        {route.length > 0 && (
-          <svg viewBox="0 0 100 100" className="map-svg">
-            <polyline
-              points={svgPoints}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.2)"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <polyline
-              points={svgPoints}
-              fill="none"
-              stroke="#00ffcc"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="running-path"
-            />
-          </svg>
-        )}
-      </ControlWrapper>
-
       <div className="box__info-grid">
-        {infoList.map((item) => {
+        {visibleInfoList.map((item) => {
           const isActive = item.id === activeEl;
 
           return (
@@ -113,10 +86,16 @@ const Preview = ({ data, styles }) => {
               onDelete={handleDeleteElement}
               onResize={handleResizeElement}
             >
-              {item.icon}
-              <span className="for-a11y">{item.label}</span>
-              <span className="text__data">{item.value}</span>
-              {item.unit && <span className="text__unit">{item.unit}</span>}
+              {item.customContent ? (
+                item.customContent
+              ) : (
+                <>
+                  {item.icon}
+                  <span className="for-a11y">{item.label}</span>
+                  <span className="text__data">{item.value}</span>
+                  {item.unit && <span className="text__unit">{item.unit}</span>}
+                </>
+              )}
             </ControlWrapper>
           );
         })}
