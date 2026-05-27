@@ -40,8 +40,25 @@ const Preview = forwardRef(({ data }, ref) => {
     </svg>
   );
 
+  const formatGarminTime = (isoString) => {
+    if (!isoString) return '';
+    try {
+      const [datePart, timePart] = isoString.split('T');
+      const [year, month, day] = datePart.split('-');
+      const [hourStr, minuteStr] = timePart.split(':');
+      
+      const hour = parseInt(hourStr, 10);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+      
+      return `${year}.${month}.${day} ${displayHour}:${minuteStr}${ampm}`;
+    } catch (e) {
+      return isoString;
+    }
+  };
+
   const rawInfoList = getInfoList({
-    startTimeLocal: data?.startTimeLocal || '',
+    startTimeLocal: data?.startTimeLocal ? formatGarminTime(data.startTimeLocal) : '',
     showDistance, paceMins, paceSecs, timeMins, timeSecs,
     averageHR: data?.averageHR || 0,
     averageCadence: data?.averageRunningCadenceInStepsPerMinute || 0,
