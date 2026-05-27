@@ -64,15 +64,20 @@ const Preview = forwardRef(({ data }, ref) => {
 
   return (
     <div className="box__card" ref={ref} style={getDynamicBackgroundStyle()}>
-      <div className="box__info-grid" style={{ position: 'relative'}}>
+      <div className="box__info-grid" style={{ position: 'relative', width: '100%', height: '100%'}}>
         {visibleInfoList?.map((item) => {
           const currentLayout = layouts[item.id];
           const isActive = item.id === activeValue;
           
-          const dynamicLeft = currentLayout?.left ? `${(currentLayout.left / 768) * 100}%` : 'auto';
-          const dynamicTop = currentLayout?.top ? `${(currentLayout.top / 1365) * 100}%` : 'auto';
-          const dynamicWidth = currentLayout?.width ? `${(currentLayout.width / 768) * 100}%` : 'auto';
-          const dynamicHeight = currentLayout?.height ? `${(currentLayout.height / 1365) * 100}%` : 'auto';
+          // const dynamicLeft = currentLayout?.left ? `${(currentLayout.left / 768) * 100}%` : 'auto';
+          // const dynamicTop = currentLayout?.top ? `${(currentLayout.top / 1365) * 100}%` : 'auto';
+          // const dynamicWidth = currentLayout?.width ? `${(currentLayout.width / 768) * 100}%` : 'auto';
+          // const dynamicHeight = currentLayout?.height ? `${(currentLayout.height / 1365) * 100}%` : 'auto';
+
+          const dynamicLeft = currentLayout?.left !== undefined ? `${currentLayout.left}px` : '10px';
+          const dynamicTop = currentLayout?.top !== undefined ? `${currentLayout.top}px` : '10px';
+          const dynamicWidth = currentLayout?.width !== undefined ? `${currentLayout.width}px` : 'auto';
+          const dynamicHeight = currentLayout?.height !== undefined ? `${currentLayout.height}px` : 'auto';
 
           return (
             <ControlWrapper

@@ -23,7 +23,6 @@ export const useElementLayout = () => {
 
     const allElements = document.querySelectorAll('.box__info');
     allElements.forEach((el) => {
-      // 인라인 스타일에 임의로 주입된 width, height 픽셀 값이 있다면 그것까지 강제 삭제!
       el.style.removeProperty('width');
       el.style.removeProperty('height');
       el.style.removeProperty('--info-width');
@@ -78,7 +77,6 @@ export const useElementLayout = () => {
     }
   };
 
-  // 📐 사이즈를 키우고 줄이는 리사이즈 함수
   const handleResizeElement = (e, id) => {
     const isTouch = e.type === 'touchstart';
     const startX = isTouch ? e.touches[0].clientX : e.clientX;
@@ -131,7 +129,7 @@ export const useElementLayout = () => {
     activeValue: currentActive,
     setActiveValue: setCurrentActive,
     handleResizeElement,
-    handleMoveElement, // 🌟 바인딩할 수 있게 리턴에 추가!
+    handleMoveElement,
     handleResetLayouts,
   };
 };

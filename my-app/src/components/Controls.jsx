@@ -1,4 +1,3 @@
-// components/Controls.jsx
 import React from 'react';
 import { useAtom } from 'jotai';
 import { activeValue, cardBackgroundAtom } from '../atom/atom';
